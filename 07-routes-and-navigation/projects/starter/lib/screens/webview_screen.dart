@@ -26,6 +26,7 @@ class WebViewScreenState extends State<WebViewScreen> {
       ),
       body: const WebView(
         initialUrl: 'https://www.raywenderlich.com/',
+        javascriptMode: JavascriptMode.unrestricted,
       ),
     );
   }

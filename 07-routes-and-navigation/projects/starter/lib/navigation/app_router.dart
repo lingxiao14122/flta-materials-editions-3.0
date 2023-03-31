@@ -26,7 +26,53 @@ class AppRouter {
         path: '/onboarding',
         builder: (context, state) => const OnboardingScreen(),
       ),
-      // TODO: Add Home Route
+      GoRoute(
+        name: 'home',
+        path: '/:tab',
+        builder: (context, state) {
+          final tab = int.tryParse(state.params['tab'] ?? '') ?? 0;
+          return Home(
+            key: state.pageKey, currentTab: tab,
+          );
+        },
+        routes: [
+          GoRoute(
+            name: 'item',
+            path: 'item/:id',
+            builder: (context, state) {
+              final itemId = state.params['id'] ?? '';
+              final item = groceryManager.getGroceryItem(itemId);
+              return GroceryItemScreen(
+                originalItem: item,
+                onCreate: (item) {
+                  groceryManager.addItem(item);
+                },
+                onUpdate: (item) {
+                  groceryManager.updateItem(item);
+                },
+              );
+            }
+          ),
+          GoRoute(
+            name: 'profile',
+            path: 'profile',
+            builder: (context, state) {
+              final tab = int.tryParse(state.params['tab'] ?? '') ?? 0;
+              return ProfileScreen(
+                user: profileManager.getUser,
+                currentTab: tab,
+              );
+            },
+            routes: [
+              GoRoute(
+                name: 'rw',
+                path: 'rw',
+                builder: (context, state) => const WebViewScreen(),
+              ),
+            ]
+          )
+        ],
+      ),
     ],
     errorPageBuilder: (context, state) {
       return MaterialPage(
